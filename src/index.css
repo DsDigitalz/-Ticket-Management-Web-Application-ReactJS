@@ -1,8 +1,9 @@
-/* @import "tailwindcss"; */
+@import "tailwindcss";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* body {
+
+body {
   font-family: Bricolage Grotesque;
-} */
+}
