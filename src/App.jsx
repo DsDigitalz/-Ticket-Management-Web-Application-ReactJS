@@ -1,42 +1,29 @@
 // src/App.jsx
+import React from "react";
+import AppRouter from "./router/AppRouter.jsx";
+import { AuthProvider } from "./hooks/useAuth.jsx";
 import { Toaster } from "react-hot-toast";
-import { AppRouter } from "./router/AppRouter";
 
-const App = () => {
+function App() {
   return (
-    <div>
-      {" "}
-      <AppRouter />;{/* Other components like Router, Layout, etc. */}
-      {/* ... */}
-      {/* Styled Toaster (Place this once in your app) */}
+    // <AuthProvider> makes the useAuth hook available globally
+    <AuthProvider>
+      <AppRouter />
+      {/* Global Toaster for notifications */}
       <Toaster
-        position="top-right" // You can change the position
+        position="top-center"
         toastOptions={{
-          // Default style for all toasts
-          className: "shadow-lg rounded-xl backdrop-blur-md",
           style: {
-            background: "#1E293B", // Surface color
-            color: "#F8FAFC", // Text High color
-            border: "1px solid #334155", // Border color
+            background: "#1E293B", // Surface BG
+            color: "#F8FAFC", // Text High
+            border: "1px solid #334155",
           },
-          // Custom styles for success toasts
-          success: {
-            iconTheme: {
-              primary: "#3B82F6", // Primary Blue
-              secondary: "#F8FAFC",
-            },
-          },
-          // Custom styles for error toasts
-          error: {
-            iconTheme: {
-              primary: "#EF4444", // Error Red
-              secondary: "#F8FAFC",
-            },
-          },
+          success: { iconTheme: { primary: "#10B981", secondary: "#F8FAFC" } },
+          error: { iconTheme: { primary: "#EF4444", secondary: "#F8FAFC" } },
         }}
       />
-    </div>
+    </AuthProvider>
   );
-};
+}
 
 export default App;

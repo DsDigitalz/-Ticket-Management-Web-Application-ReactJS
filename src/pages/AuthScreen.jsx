@@ -1,34 +1,36 @@
 // src/pages/AuthScreen.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../hooks/useAuth.jsx";
 import { Layout } from "../components/common/Layout";
 import { motion } from "framer-motion";
-import toast from "react-hot-toast"; // <-- Import the toast library
-import { Eye, EyeOff } from "lucide-react"; // <-- Import icons for password toggle (install lucide-react)
+import toast from "react-hot-toast";
+import { Eye, EyeOff } from "lucide-react";
 
-// --- Theme Colors (Arbitrary Hex Values) ---
-// Background: #0F172A (slate-900)
-// Surface (Card BG): #1E293B (slate-800)
-// Primary Blue: #3B82F6 (blue-500)
-// Primary Blue Hover: #2563EB (blue-600)
-// Text High: #F8FAFC (white)
-// Text Low: #94A3B8 (slate-400)
-// Border: #334155 (slate-700)
-// Error Red: #EF4444 (red-500)
+// Theme Colors (Arbitrary Hex Values)
+// Surface (Card BG): #1E293B
+// Primary Blue: #3B82F6
+// Text High: #F8FAFC
+// Text Low: #94A3B8
+// Border: #334155
+// Error Red: #EF4444
 
 export const AuthScreen = ({ isLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // <-- New state for password toggle
-  const { login } = useAuth();
+
+  // 💡 FIX 1: Use separate state for password visibility toggle
+  const [showMainPassword, setShowMainPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const { login, register } = useAuth();
   const navigate = useNavigate();
 
   const title = isLogin ? "Login to TicketApp" : "Create Account";
   const actionText = isLogin ? "Login" : "Sign Up";
 
-  // Use the itemVariants from the LandingPage for consistent animation
   const formVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
@@ -42,43 +44,53 @@ export const AuthScreen = ({ isLogin }) => {
     e.preventDefault();
     setError("");
 
-    if (!username || !password) {
+    // Form Validation: Checks for empty fields
+    if (!username || !password || (!isLogin && !confirmPassword)) {
       setError("All fields are mandatory.");
-      toast.error("Please fill in all fields."); // <-- Toast for validation
+      toast.error("Please fill in all fields.");
       return;
     }
 
     if (isLogin) {
-      // Test credentials: user / pass
+      // LOGIN
       const success = login(username, password);
       if (success) {
-        toast.success("Login successful! Redirecting...");
-        navigate("/dashboard"); // <-- Redirect on successful login
+        navigate("/dashboard");
       } else {
-        const authError = "Login failed: Invalid username or password.";
-        setError(authError);
-        toast.error(authError); // <-- Toast for failed login
+        setError("Invalid username or password.");
+        toast.error("Login failed: Invalid username or password.");
       }
     } else {
-      // Simulated Signup Logic
-      // In a real app, this would call the API
-      toast.success("Account created! Please log in."); // <-- Toast for successful signup
-      navigate("/auth/login"); // <-- Redirect to login after signup
+      // SIGN UP: Check if passwords match
+      if (password !== confirmPassword) {
+        setError("Passwords do not match.");
+        toast.error("Password and Confirm Password must match.");
+        return;
+      }
+
+      const success = register(username, password);
+      if (success) {
+        toast.success("Account created successfully! Please log in.");
+        navigate("/auth/login");
+      }
     }
   };
+
+  // 💡 FIX 2: Removed the helper component and integrated the JSX directly.
+  // This ensures the input change handler (onChange) and the state management
+  // are directly tied to the correct parent states (password, setPassword, etc.).
+  // It also allows the separate visibility states (showMainPassword, showConfirmPassword) to be used correctly.
 
   return (
     <Layout>
       {/* <section> semantic tag for the centered form */}
       <section className="flex items-center justify-center min-h-[70vh] py-10 sm:py-16">
-        {/* Auth Card Container - Framer Motion Animation */}
         <motion.div
           className="w-full max-w-md bg-[#1E293B] p-8 rounded-xl border border-[#334155] shadow-2xl shadow-black/50"
           variants={formVariants}
           initial="hidden"
           animate="visible"
         >
-          {/* Title */}
           <h2 className="text-3xl font-bold text-center text-[#F8FAFC] mb-8">
             {title}
           </h2>
@@ -88,7 +100,7 @@ export const AuthScreen = ({ isLogin }) => {
             {/* Username Field */}
             <div className="space-y-2">
               <label htmlFor="username" className="text-[#94A3B8] font-medium">
-                Username {isLogin && "(Test: user)"}
+                Username
               </label>
               <input
                 id="username"
@@ -101,36 +113,74 @@ export const AuthScreen = ({ isLogin }) => {
               />
             </div>
 
-            {/* Password Field with Toggle */}
+            {/* Main Password Field (Login & Signup) */}
             <div className="space-y-2">
               <label htmlFor="password" className="text-[#94A3B8] font-medium">
-                Password {isLogin && "(Test: pass)"}
+                Password
               </label>
               <div className="relative">
                 <input
                   id="password"
-                  type={showPassword ? "text" : "password"} // <-- Conditional type
+                  type={showMainPassword ? "text" : "password"} // Use specific state
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="bg-[#0F172A] border border-[#334155] text-[#F8FAFC] rounded-lg p-3 w-full focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] outline-none transition duration-150 pr-10" // Added padding-right
+                  onChange={(e) => setPassword(e.target.value)} // Correct state setter
+                  className="bg-[#0F172A] border border-[#334155] text-[#F8FAFC] rounded-lg p-3 w-full focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] outline-none transition duration-150 pr-10"
                   placeholder="Enter your password"
                   required
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)} // <-- Toggle function
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-[#94A3B8]  transition duration-150"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  onClick={() => setShowMainPassword(!showMainPassword)} // Toggle specific state
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-[#94A3B8] hover:text-[#F8FAFC] transition duration-150"
+                  aria-label={
+                    showMainPassword ? "Hide password" : "Show password"
+                  }
                 >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showMainPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
-
-              {/* Inline Error Message */}
-              {error && <p className="text-[#EF4444] text-sm mt-1">{error}</p>}
             </div>
 
-            {/* Submit Button */}
+            {/* Confirm Password Field (Only for Sign Up) */}
+            {!isLogin && (
+              <div className="space-y-2">
+                <label
+                  htmlFor="confirmPassword"
+                  className="text-[#94A3B8] font-medium"
+                >
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"} // Use specific state
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)} // Correct state setter
+                    className="bg-[#0F172A] border border-[#334155] text-[#F8FAFC] rounded-lg p-3 w-full focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] outline-none transition duration-150 pr-10"
+                    placeholder="Confirm your password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle specific state
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-[#94A3B8] hover:text-[#F8FAFC] transition duration-150"
+                    aria-label={
+                      showConfirmPassword ? "Hide password" : "Show password"
+                    }
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff size={20} />
+                    ) : (
+                      <Eye size={20} />
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Inline Error Message */}
+            {error && <p className="text-[#EF4444] text-sm mt-1">{error}</p>}
+
             <motion.button
               type="submit"
               className="w-full bg-[#3B82F6] hover:bg-[#2563EB] text-[#F8FAFC] font-bold py-3 rounded-lg transition duration-200 shadow-lg shadow-[#3B82F6]/30"
@@ -141,7 +191,6 @@ export const AuthScreen = ({ isLogin }) => {
             </motion.button>
           </form>
 
-          {/* Toggle Link */}
           <p className="mt-6 text-center text-[#94A3B8]">
             {isLogin ? "Need an account? " : "Already have an account? "}
             <Link
