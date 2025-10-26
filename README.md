@@ -1,16 +1,52 @@
-# React + Vite
+## Project Overview
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+TicketApp is a modern, responsive web application for managing support tickets and tasks. The project is built using React and styled with Tailwind CSS, prioritizing a clean, dark-themed user interface (UI) and a smooth user experience (UX) powered by Framer Motion animations.
 
-Currently, two official plugins are available:
+## Key Technologies
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Frontend: React (Vite)
 
-## React Compiler
+Routing: React Router DOM (v6)
 
-The React Compiler is not enabled on this template. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Styling: Tailwind CSS (Dark Theme)
 
-## Expanding the ESLint configuration
+Animation: Framer Motion (for transitions and scroll effects)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+State/Context: Custom React Context (AuthContext.jsx)
+
+Notifications: react-hot-toast
+
+Icons: Lucide Icons
+
+## Implemented Features
+
+1. Authentication System
+   A mock authentication system is in place using React Context and Local Storage.
+
+Login & Registration: Handled by a single, reusable component (AuthScreen.jsx) using the isLogin prop.
+
+Routes: Login is accessible at /auth/login and Registration at /auth/register.
+
+Protected Routes: Navigation to /dashboard and /tickets is protected, requiring a successful login/registration.
+
+Logout: Integrated into the PrivateLayout and handled by the AuthContext.
+
+2. Layouts and Navigation
+   The application uses two main layout components for structural consistency:
+
+Layout.jsx: The public layout used for the Landing Page and Authentication Screens.
+
+PrivateLayout.jsx: The protected layout used for the Dashboard and Ticket Management.
+
+Responsive Sidebar: Features a fixed sidebar on desktop and a mobile-friendly, animated overlay menu using Framer Motion.
+
+Active Link Highlighting: Uses the NavLink component to visually highlight the current page (e.g., Dashboard or Ticket Management) with a blue background and bold text.
+
+Animations: All sidebar links are animated with a fade-in and slide-in effect on mount.
+
+3. UI/UX Enhancements
+   Framer Motion Integration: All custom components (FeatureBox, StatCard, etc.) and core navigation elements feature scroll-based or mount animations (fade-in/slide-in).
+
+Semantic Markup: HTML elements (<main>, <section>, <aside>, <nav>, <article>) are used appropriately for accessibility and structure.
+
+Themed Toasts: Global notifications (react-hot-toast) are styled to match the dark UI, using the #1E293B background and theme accent colors (blue, green, red) for success/error states.
