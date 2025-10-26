@@ -1,19 +1,11 @@
 // src/pages/AuthScreen.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth.jsx";
+import { useAuth } from "../context/AuthContext"; // CRITICAL: Corrected import path
 import { Layout } from "../components/common/Layout";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { Eye, EyeOff } from "lucide-react";
-
-// Theme Colors (Arbitrary Hex Values)
-// Surface (Card BG): #1E293B
-// Primary Blue: #3B82F6
-// Text High: #F8FAFC
-// Text Low: #94A3B8
-// Border: #334155
-// Error Red: #EF4444
 
 export const AuthScreen = ({ isLogin }) => {
   const [username, setUsername] = useState("");
@@ -21,16 +13,17 @@ export const AuthScreen = ({ isLogin }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
-  // 💡 FIX 1: Use separate state for password visibility toggle
   const [showMainPassword, setShowMainPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // Destructure login/register from useAuth hook
   const { login, register } = useAuth();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // This hook is correctly used for internal navigation
 
   const title = isLogin ? "Login to TicketApp" : "Create Account";
   const actionText = isLogin ? "Login" : "Sign Up";
 
+  // Framer Motion variants for the form container
   const formVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
@@ -42,9 +35,9 @@ export const AuthScreen = ({ isLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError("");
+    setError(""); // Clear previous errors
 
-    // Form Validation: Checks for empty fields
+    // Basic client-side validation
     if (!username || !password || (!isLogin && !confirmPassword)) {
       setError("All fields are mandatory.");
       toast.error("Please fill in all fields.");
@@ -52,16 +45,16 @@ export const AuthScreen = ({ isLogin }) => {
     }
 
     if (isLogin) {
-      // LOGIN
+      // Logic for Login
       const success = login(username, password);
-      if (success) {
-        navigate("/dashboard");
-      } else {
+      if (!success) {
+        // If login function returns false (mock failure)
         setError("Invalid username or password.");
         toast.error("Login failed: Invalid username or password.");
       }
+      // If success, navigate is handled internally by AuthContext's login function
     } else {
-      // SIGN UP: Check if passwords match
+      // Logic for Sign Up
       if (password !== confirmPassword) {
         setError("Passwords do not match.");
         toast.error("Password and Confirm Password must match.");
@@ -71,18 +64,17 @@ export const AuthScreen = ({ isLogin }) => {
       const success = register(username, password);
       if (success) {
         toast.success("Account created successfully! Please log in.");
-        navigate("/auth/login");
+        navigate("/auth/login"); // Redirect to login after successful registration
       }
+      // If register fails (e.g., username taken in a real API), register function
+      // would return false and AuthScreen could show an error, but mock currently always succeeds.
     }
   };
 
-  // 💡 FIX 2: Removed the helper component and integrated the JSX directly.
-  // This ensures the input change handler (onChange) and the state management
-  // are directly tied to the correct parent states (password, setPassword, etc.).
-  // It also allows the separate visibility states (showMainPassword, showConfirmPassword) to be used correctly.
-
   return (
     <Layout>
+      {" "}
+      {/* Use the public Layout for authentication screens */}
       {/* <section> semantic tag for the centered form */}
       <section className="flex items-center justify-center min-h-[70vh] py-10 sm:py-16">
         <motion.div
@@ -121,17 +113,17 @@ export const AuthScreen = ({ isLogin }) => {
               <div className="relative">
                 <input
                   id="password"
-                  type={showMainPassword ? "text" : "password"} // Use specific state
+                  type={showMainPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)} // Correct state setter
+                  onChange={(e) => setPassword(e.target.value)}
                   className="bg-[#0F172A] border border-[#334155] text-[#F8FAFC] rounded-lg p-3 w-full focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] outline-none transition duration-150 pr-10"
                   placeholder="Enter your password"
                   required
                 />
                 <button
                   type="button"
-                  onClick={() => setShowMainPassword(!showMainPassword)} // Toggle specific state
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-[#94A3B8] hover:text-[#F8FAFC] transition duration-150"
+                  onClick={() => setShowMainPassword(!showMainPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-[#94A3B8]  transition duration-150"
                   aria-label={
                     showMainPassword ? "Hide password" : "Show password"
                   }
@@ -153,17 +145,17 @@ export const AuthScreen = ({ isLogin }) => {
                 <div className="relative">
                   <input
                     id="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"} // Use specific state
+                    type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)} // Correct state setter
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     className="bg-[#0F172A] border border-[#334155] text-[#F8FAFC] rounded-lg p-3 w-full focus:ring-2 focus:ring-[#3B82F6] focus:border-[#3B82F6] outline-none transition duration-150 pr-10"
                     placeholder="Confirm your password"
                     required
                   />
                   <button
                     type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle specific state
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-[#94A3B8] hover:text-[#F8FAFC] transition duration-150"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-[#94A3B8]  transition duration-150"
                     aria-label={
                       showConfirmPassword ? "Hide password" : "Show password"
                     }
@@ -191,10 +183,11 @@ export const AuthScreen = ({ isLogin }) => {
             </motion.button>
           </form>
 
+          {/* Link to switch between Login and Sign Up */}
           <p className="mt-6 text-center text-[#94A3B8]">
             {isLogin ? "Need an account? " : "Already have an account? "}
             <Link
-              to={isLogin ? "/auth/signup" : "/auth/login"}
+              to={isLogin ? "/auth/register" : "/auth/login"} // CRITICAL: Corrected to /auth/register
               className="text-[#3B82F6] hover:text-[#77A4FF] font-medium transition duration-150"
             >
               {isLogin ? "Sign Up" : "Log In"}

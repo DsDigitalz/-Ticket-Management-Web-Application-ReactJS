@@ -8,6 +8,8 @@ import { LandingPage } from "../pages/LandingPage.jsx";
 import { AuthScreen } from "../pages/AuthScreen.jsx";
 import { Dashboard } from "../pages/Dashboard.jsx";
 import PrivateRoute from "../components/common/PrivateRoute.jsx";
+import { TicketManagement } from "../pages/TicketManagement.jsx";
+import { NotFound } from "../pages/NotFound.jsx";
 
 export default function AppRouter() {
   const { isAuthReady } = useAuth();
@@ -37,18 +39,11 @@ export default function AppRouter() {
           {/* Dashboard (Protected) */}
           <Route path="/dashboard" element={<Dashboard />} />
           {/* Add other protected routes here (e.g., TicketManagement) */}
-          {/* <Route path="/tickets" element={<TicketManagement />} /> */}
+          <Route path="/tickets" element={<TicketManagement />} />
         </Route>
 
         {/* 404/Catch-all Route */}
-        <Route
-          path="*"
-          element={
-            <div className="text-[#F8FAFC] text-center p-10 bg-[#0F172A] min-h-screen">
-              404 - Page Not Found
-            </div>
-          }
-        />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
