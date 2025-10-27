@@ -93,8 +93,8 @@ export const LandingPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="text-6xl font-extrabold text-[#F8FAFC] mb-4 opacity-90">
-            TicketApp
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-[#F8FAFC] mb-4 opacity-90">
+            Ticketrax
           </h1>
           <p className="text-xl text-center text-[#94A3B8] mb-8">
             Your robust, multi-platform solution for simple and efficient ticket
