@@ -91,7 +91,7 @@ export const PrivateLayout = ({ children }) => {
       <aside className="fixed top-0 left-0 w-64 h-full bg-[#1E293B] border-r border-[#334155] p-4 hidden lg:block z-40">
         <div className="py-6 mb-8 border-b border-[#334155]">
           <h2 className="text-2xl font-extrabold text-[#3B82F6] px-3">
-            TicketApp
+            Ticketrax
           </h2>
         </div>
         <Navigation onClose={() => {}} />
