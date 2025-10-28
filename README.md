@@ -1,8 +1,8 @@
 ## Project Overview
 
-TicketApp is a modern, responsive web application for managing support tickets and tasks. The project is built using React and styled with Tailwind CSS, prioritizing a clean, dark-themed user interface (UI) and a smooth user experience (UX) powered by Framer Motion animations.
+Ticketrax is a modern, responsive web application for managing support tickets and tasks. The project is built using React and styled with Tailwind CSS, prioritizing a clean, dark-themed user interface (UI) and a smooth user experience (UX) powered by Framer Motion animations.
 
-## Key Technologies
+## Key Technologies/Frameworks
 
 Frontend: React (Vite)
 
