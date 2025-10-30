@@ -100,7 +100,7 @@ export const PrivateLayout = ({ children }) => {
       <main className="lg:ml-64 relative min-h-screen">
         {/* Mobile Header */}
         <header className="flex lg:hidden justify-between items-center bg-[#1E293B] p-4 border-b border-[#334155] sticky top-0 z-50">
-          <h2 className="text-xl font-extrabold text-[#3B82F6]">TicketApp</h2>
+          <h2 className="text-xl font-extrabold text-[#3B82F6]">Ticketrax</h2>
           <button
             onClick={() => setIsSidebarOpen(true)}
             className="p-2 text-[#F8FAFC] hover:text-[#3B82F6] transition focus:outline-none focus:ring-2 focus:ring-[#3B82F6]"
