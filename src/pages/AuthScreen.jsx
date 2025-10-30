@@ -20,7 +20,7 @@ export const AuthScreen = ({ isLogin }) => {
   const { login, register } = useAuth();
   const navigate = useNavigate(); // This hook is correctly used for internal navigation
 
-  const title = isLogin ? "Login to TicketApp" : "Create Account";
+  const title = isLogin ? "Login to Ticketrax" : "Create Account";
   const actionText = isLogin ? "Login" : "Sign Up";
 
   // Framer Motion variants for the form container
